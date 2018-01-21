@@ -56,7 +56,7 @@
 
     </head>
 
-  <body>
+    <body>
 
     <h1 style="text-align:center">Visualisation of crimes in the United Kingdom</h1>
 
@@ -72,38 +72,39 @@
     </div>
 
     <div class="centered">
-        <div id="mapid"></div>
+      <div id="mapid"></div>
     </div>
 
     <script>
-	 //Creating map
+	  //Creating map
     var mymap = L.map('mapid', {zoomControl:true}).setView([54.4, -3.888835], 5);
     mymap.zoomControl.setPosition('bottomleft');
+
     //Adding a tile layer from OSM
       // L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       //   maxZoom: 14,
       //   attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a>',
       // }).addTo(mymap);
 
-      var wmsLayer = L.tileLayer.wms('https://demo.boundlessgeo.com/geoserver/ows?', {
+    var wmsLayer = L.tileLayer.wms('https://demo.boundlessgeo.com/geoserver/ows?', {
         layers: 'ne:ne'
     }).addTo(mymap);
 
 
-      function getData(){
-          start = document.getElementById("startdate");
-          end = document.getElementById("enddate");
-          var xmlhttp = new XMLHttpRequest();
-          var url = "https://data.police.uk/api/crimes-at-location?" + "date=" + start.value +"&location_id=884227"
-          xmlhttp.onreadystatechange = function(){
-              if(xmlhttp.readyState == 4  && xmlhttp.status == 200){
-                  var objectArray = xmlhttp.responseText;
-                  document.getElementById("test").innerHTML = objectArray;
-              }
-          }
-          xmlhttp.open("GET", url, true)
-          xmlhttp.send()
-      }
+    function getData(){
+        start = document.getElementById("startdate");
+        end = document.getElementById("enddate");
+        var xmlhttp = new XMLHttpRequest();
+        var url = "https://data.police.uk/api/crimes-at-location?" + "date=" + start.value +"&location_id=884227"
+        xmlhttp.onreadystatechange = function(){
+            if(xmlhttp.readyState == 4  && xmlhttp.status == 200){
+                var objectArray = xmlhttp.responseText;
+                document.getElementById("test").innerHTML = objectArray;
+            }
+        }
+        xmlhttp.open("GET", url, true)
+        xmlhttp.send()
+    }
 
     </script>
 
