@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+
+<html>
+
+  <head>
+    <!-- Encoding -->
+    <meta charset="UTF-8">
+    <!-- Description of Web Page -->
+    <meta name="description" content="SII Final Project">
+    <!-- Keywords important for Google -->
+    <meta name="keywords" content="Akhil Patil, Pramit Ghosh, Shenaha Savikumar, Raphael Witt, Zhendong Yuan, Geoinformatics, Students">
+    <!-- Author -->
+    <meta name="author" content="Akhil Patil, Pramit Ghosh, Shenaha Savikumar, Raphael Witt, Zhendong Yuan">
+    <!-- Title -->
+    <title>SII - Final project</title>
+
+	  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.2.0/dist/leaflet.css" integrity="sha512-M2wvCLH6DSRazYeZRIm1JnYyh22purTM+FDB5CsyxtQJYeKq83arPe5wgbNmcFXGqiSH2XR8dT/fJISVA1r/zQ==" crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.2.0/dist/leaflet.js" integrity="sha512-lInM/apFSqyy1o6s89K4iQUKg6ppXEgsVxT35HbzUupEVRh2Eu9Wdl4tHj7dZO0s1uvplcYGmt3498TtHq+log==" crossorigin=""></script>
+
+
+    <!-- Style -->
+    <style>
+  	#mapid {
+  	  height: 450px;
+      width: 50%;
+      border-radius: 20px;
+      border-style: solid;
+      border-color: gray;
+      border-width: 1 px;
+      position: absolute;
+  	}
+    hr {
+  		display: block;
+  		margin-left: auto;
+  		margin-right: auto;
+  		border-style: solid;
+  		border-width: 2 px;
+      color: gray;
+    }
+    .centered {
+      margin-left: auto;
+      margin-right: auto;
+      width: 50%;
+    }
+    #left {
+      position: absolute;
+      margin-left: 7%;
+      margin-top: 10%;
+    }
+    #button {
+      position: absolute;
+      margin-left: 25%;
+      margin-top: 15%;
+    }
+    </style>
+
+    </head>
+
+  <body>
+
+    <h1 style="text-align:center">Visualisation of crimes in the United Kingdom</h1>
+
+    <hr></hr>
+
+    <div id="left">
+      <input id="startdate" type="month" value="2017-05"><br>
+      <input id="enddate" type="month" value="2017-06">
+      <div id="button">
+        <button id="getdata" onclick="getData()">Get Data</button>
+      </div>
+      <p id="test">Hier steht der output</p>
+    </div>
+
+    <div class="centered">
+        <div id="mapid"></div>
+    </div>
+
+    <script>
+	 //Creating map
+    var mymap = L.map('mapid', {zoomControl:true}).setView([54.4, -3.888835], 5);
+    mymap.zoomControl.setPosition('bottomleft');
+    //Adding a tile layer from OSM
+      // L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      //   maxZoom: 14,
+      //   attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a>',
+      // }).addTo(mymap);
+
+      var wmsLayer = L.tileLayer.wms('https://demo.boundlessgeo.com/geoserver/ows?', {
+        layers: 'ne:ne'
+    }).addTo(mymap);
+
+
+      function getData(){
+          start = document.getElementById("startdate");
+          end = document.getElementById("enddate");
+          var xmlhttp = new XMLHttpRequest();
+          var url = "https://data.police.uk/api/crimes-at-location?" + "date=" + start.value +"&location_id=884227"
+          xmlhttp.onreadystatechange = function(){
+              if(xmlhttp.readyState == 4  && xmlhttp.status == 200){
+                  var objectArray = xmlhttp.responseText;
+                  document.getElementById("test").innerHTML = objectArray;
+              }
+          }
+          xmlhttp.open("GET", url, true)
+          xmlhttp.send()
+      }
+
+    </script>
+
+    </body>
+
+</html>
