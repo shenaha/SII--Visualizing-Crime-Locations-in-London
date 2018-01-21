@@ -23,10 +23,10 @@
   	#mapid {
   	  height: 450px;
       width: 50%;
-      border-radius: 20px;
+      border-radius: 10px;
       border-style: solid;
       border-color: gray;
-      border-width: 1 px;
+      border-width: 0.1 px;
       position: absolute;
   	}
     hr {
@@ -52,13 +52,17 @@
       margin-left: 25%;
       margin-top: 15%;
     }
+    #showdata {
+      height: 35px;
+      border-radius: 10px;
+    }
     </style>
 
     </head>
 
     <body>
 
-    <h1 style="text-align:center">Visualisation of crimes in the United Kingdom</h1>
+    <h1 style="text-align:center;font-family: sans-serif">Visualisation of crimes in the United Kingdom</h1>
 
     <hr></hr>
 
@@ -66,9 +70,9 @@
       <input id="startdate" type="month" value="2017-05"><br>
       <input id="enddate" type="month" value="2017-06">
       <div id="button">
-        <button id="getdata" onclick="getData()">Get Data</button>
+        <button id="showdata" onclick="getData()">Show Data</button>
       </div>
-      <p id="test">Hier steht der output</p>
+      <p id="test"></p>
     </div>
 
     <div class="centered">
@@ -86,25 +90,27 @@
       //   attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a>',
       // }).addTo(mymap);
 
+
+    //Using geoserver for retrieving map tiles
     var wmsLayer = L.tileLayer.wms('https://demo.boundlessgeo.com/geoserver/ows?', {
         layers: 'ne:ne'
     }).addTo(mymap);
 
 
-    function getData(){
-        start = document.getElementById("startdate");
-        end = document.getElementById("enddate");
-        var xmlhttp = new XMLHttpRequest();
-        var url = "https://data.police.uk/api/crimes-at-location?" + "date=" + start.value +"&location_id=884227"
-        xmlhttp.onreadystatechange = function(){
-            if(xmlhttp.readyState == 4  && xmlhttp.status == 200){
-                var objectArray = xmlhttp.responseText;
-                document.getElementById("test").innerHTML = objectArray;
-            }
-        }
-        xmlhttp.open("GET", url, true)
-        xmlhttp.send()
-    }
+    // function getData(){
+    //     start = document.getElementById("startdate");
+    //     end = document.getElementById("enddate");
+    //     var xmlhttp = new XMLHttpRequest();
+    //     var url = "https://data.police.uk/api/crimes-at-location?" + "date=" + start.value +"&location_id=884227"
+    //     xmlhttp.onreadystatechange = function(){
+    //         if(xmlhttp.readyState == 4  && xmlhttp.status == 200){
+    //             var objectArray = xmlhttp.responseText;
+    //             document.getElementById("test").innerHTML = objectArray;
+    //         }
+    //     }
+    //     xmlhttp.open("GET", url, true)
+    //     xmlhttp.send()
+    // }
 
     </script>
 
