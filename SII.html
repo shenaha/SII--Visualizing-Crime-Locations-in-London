@@ -47,14 +47,6 @@
       margin-left: 20%;
       margin-top: 15%;
     }
-    #startdate {
-      border: 1px solid lightgray;
-      padding:.75em 1em .5em 1em;
-      background-color: gray;
-      color: white;
-      margin-left: 20%;
-      margin-top: 15%;
-    }
     .buttonstyle {
       width: 100px;
       height: 35px;
@@ -81,7 +73,9 @@
 
     <!-- Controlpanel with selection and buttons -->
     <div id="left">
-        <select name="startdate" id="startdate" >
+      <input id="startdate" type="date" value="2016-04-01"><br>
+      <input id="enddate" type="date" value="2016-06-01">
+        <!-- <select name="startdate" id="startdate" >
             <option value="2017-04-01" selected="selected">2017-04</option>
             <option value="2017-03-01">2017-03</option>
             <option value="2017-02-01">2017-02</option>
@@ -95,7 +89,7 @@
             <option value="2016-06-01">2016-06</option>
             <option value="2016-05-01">2016-05</option>
             <option value="2016-04-01">2016-04</option>
-        </select>
+        </select> -->
         <div id="button">
           <button id="showdata" class="buttonstyle">Show Data</button>
           <br>
@@ -152,8 +146,10 @@
     //On button "showdata" is clicked, retrieve data from the local geoserver
     $("#showdata").click(function(){
       start = document.getElementById("startdate");
+      end = document.getElementById("enddate");
       $.ajax({
-        url: "http://localhost:8080/geoserver/cite/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=cite:crimes&propertyName=Month,the_geom,Crime_ID,Location,Crime_type&CQL_FILTER=Month=%27" + start.value + "%27&outputFormat=application/json",
+        url: "http://localhost:8080/geoserver/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=cite%3Acrimes&outputFormat=application%2Fjson&CQL_FILTER=%22ymonth%22%20AFTER%20" + start.value + "T00%3A00%3A00Z%20AND%20%22ymonth%22%20BEFORE%20" + end.value + "T23%3A59%3A59Z",
+        //url: "http://localhost:8080/geoserver/cite/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=cite:crimes&propertyName=Month,the_geom,Crime_ID,Location,Crime_type&CQL_FILTER=Month=%27" + start.value + "%27&outputFormat=application/json",
         jsonCallback: 'getJson',
         success: loadGeoJson
       });
