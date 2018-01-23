@@ -3,6 +3,11 @@
 <html>
 
   <head>
+    <!-- INFORMATION
+    To get this example application running, make sure to enable CORS on your local geosever by editing the WEB.XML file.
+    Without doing this the application is not working!
+    -->
+
     <!-- Encoding -->
     <meta charset="UTF-8">
     <!-- Description of Web Page -->
@@ -13,7 +18,7 @@
     <meta name="author" content="Akhil Patil, Pramit Ghosh, Shenaha Savikumar, Raphael Witt, Zhendong Yuan">
     <!-- Title -->
     <title>SII - Final project</title>
-    <!-- Implementing Leaflet resources  -->
+    <!-- Implementing Leaflet resources and AJAX -->
 	  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.2.0/dist/leaflet.css" integrity="sha512-M2wvCLH6DSRazYeZRIm1JnYyh22purTM+FDB5CsyxtQJYeKq83arPe5wgbNmcFXGqiSH2XR8dT/fJISVA1r/zQ==" crossorigin=""/>
     <script src="https://unpkg.com/leaflet@1.2.0/dist/leaflet.js" integrity="sha512-lInM/apFSqyy1o6s89K4iQUKg6ppXEgsVxT35HbzUupEVRh2Eu9Wdl4tHj7dZO0s1uvplcYGmt3498TtHq+log==" crossorigin=""></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
@@ -74,36 +79,37 @@
 
     <hr></hr>
 
-    <!-- Selection for the month -->
+    <!-- Controlpanel with selection and buttons -->
     <div id="left">
-      <select name="year" id="startdate" >
-          <option value="2017-04-01" selected="selected">2017-04</option>
-          <option value="2017-03-01">2017-03</option>
-          <option value="2017-02-01">2017-02</option>
-          <option value="2017-01-01">2017-01</option>
-          <option value="2016-12-01">2016-12</option>
-          <option value="2016-11-01">2016-11</option>
-          <option value="2016-10-01">2016-10</option>
-          <option value="2016-09-01">2016-09</option>
-          <option value="2016-08-01">2016-08</option>
-          <option value="2016-07-01">2016-07</option>
-          <option value="2016-06-01">2016-06</option>
-          <option value="2016-05-01">2016-05</option>
-          <option value="2016-04-01">2016-04</option>
-          </select>
-      <div id="button">
-        <button id="showdata" class="buttonstyle">Show Data</button>
-        <br>
-        <br>
-        <button id="removedata" class="buttonstyle" onclick="removeData()">Remove Data</button>
-      </div>
+        <select name="startdate" id="startdate" >
+            <option value="2017-04-01" selected="selected">2017-04</option>
+            <option value="2017-03-01">2017-03</option>
+            <option value="2017-02-01">2017-02</option>
+            <option value="2017-01-01">2017-01</option>
+            <option value="2016-12-01">2016-12</option>
+            <option value="2016-11-01">2016-11</option>
+            <option value="2016-10-01">2016-10</option>
+            <option value="2016-09-01">2016-09</option>
+            <option value="2016-08-01">2016-08</option>
+            <option value="2016-07-01">2016-07</option>
+            <option value="2016-06-01">2016-06</option>
+            <option value="2016-05-01">2016-05</option>
+            <option value="2016-04-01">2016-04</option>
+        </select>
+        <div id="button">
+          <button id="showdata" class="buttonstyle">Show Data</button>
+          <br>
+          <br>
+          <button id="removedata" class="buttonstyle" onclick="removeData()">Remove Data</button>
+        </div>
     </div>
 
     <!-- Div container for map -->
     <div id="mapid"></div>
 
-
+    <!-- JavaScript -->
     <script>
+
 	  //Creating map
     var mymap = L.map('mapid', {zoomControl:true}).setView([51.5197230, -0.098044], 13);
     mymap.zoomControl.setPosition('bottomleft');
@@ -126,6 +132,7 @@
     var overlayMaps = {
       "Streetmap": osmmap,
     };
+    //Adding layer control to switch enable overlay
     L.control.layers(baseMaps, overlayMaps).addTo(mymap);
 
 
@@ -145,14 +152,14 @@
     //On button "showdata" is clicked, retrieve data from the local geoserver
     $("#showdata").click(function(){
       start = document.getElementById("startdate");
-          $.ajax({
-            url: "http://localhost:8080/geoserver/cite/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=cite:crimes&propertyName=Month,the_geom&CQL_FILTER=Month=%27" + start.value + "%27&outputFormat=application/json",//geoJsonUrl,// + L.Util.getParamString(parameters),
-            datatype: 'json',
-            jsonCallback: 'getJson',
-            success: loadGeoJson
-            });
+      $.ajax({
+        url: "http://localhost:8080/geoserver/cite/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=cite:crimes&propertyName=Month,the_geom,Crime_ID,Location,Crime_type&CQL_FILTER=Month=%27" + start.value + "%27&outputFormat=application/json",
+        jsonCallback: 'getJson',
+        success: loadGeoJson
+      });
     });
 
+    //Function to remove the layer
     function removeData(){
       mymap.removeLayer(crimes);
     }
