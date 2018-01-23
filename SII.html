@@ -13,10 +13,10 @@
     <meta name="author" content="Akhil Patil, Pramit Ghosh, Shenaha Savikumar, Raphael Witt, Zhendong Yuan">
     <!-- Title -->
     <title>SII - Final project</title>
-
+    <!-- Implementing Leaflet resources  -->
 	  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.2.0/dist/leaflet.css" integrity="sha512-M2wvCLH6DSRazYeZRIm1JnYyh22purTM+FDB5CsyxtQJYeKq83arPe5wgbNmcFXGqiSH2XR8dT/fJISVA1r/zQ==" crossorigin=""/>
     <script src="https://unpkg.com/leaflet@1.2.0/dist/leaflet.js" integrity="sha512-lInM/apFSqyy1o6s89K4iQUKg6ppXEgsVxT35HbzUupEVRh2Eu9Wdl4tHj7dZO0s1uvplcYGmt3498TtHq+log==" crossorigin=""></script>
-
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 
     <!-- Style -->
     <style>
@@ -28,6 +28,9 @@
       border-color: gray;
       border-width: 0.1 px;
       position: absolute;
+      top: 20%;
+      margin-left: 25%;
+      margin-right: 25%;
   	}
     hr {
   		display: block;
@@ -37,11 +40,6 @@
   		border-width: 2 px;
       color: gray;
     }
-    .centered {
-      margin-left: auto;
-      margin-right: auto;
-      width: 50%;
-    }
     #left {
       position: absolute;
       margin-left: 7%;
@@ -49,12 +47,21 @@
     }
     #button {
       position: absolute;
-      margin-left: 25%;
+      margin-left: 20%;
       margin-top: 15%;
     }
-    #showdata {
+    .buttonstyle {
+      width: 100px;
       height: 35px;
       border-radius: 10px;
+    }
+    #startdate {
+      border: 1px solid gray;
+      padding:.75em 1em .5em 1em;
+      background-color: gray;
+      color:white;
+      margin-left: 20%;
+      margin-top: 15%;
     }
     </style>
 
@@ -63,57 +70,92 @@
     <body>
 
     <!-- Heading -->
-    <h1 style="text-align:center;font-family: sans-serif">Visualisation of crimes in the United Kingdom</h1>
+    <h1 style="text-align:center;font-family: sans-serif">Visualisation of crimes in London</h1>
 
     <hr></hr>
 
-    <!-- Div container for control elements -->
+    <!-- Selection for the month -->
     <div id="left">
-      <input id="startdate" type="month" value="2017-05"><br>
-      <input id="enddate" type="month" value="2017-06">
+      <select name="year" id="startdate" >
+          <option value="2017-04-01" selected="selected">2017-04</option>
+          <option value="2017-03-01">2017-03</option>
+          <option value="2017-02-01">2017-02</option>
+          <option value="2017-01-01">2017-01</option>
+          <option value="2016-12-01">2016-12</option>
+          <option value="2016-11-01">2016-11</option>
+          <option value="2016-10-01">2016-10</option>
+          <option value="2016-09-01">2016-09</option>
+          <option value="2016-08-01">2016-08</option>
+          <option value="2016-07-01">2016-07</option>
+          <option value="2016-06-01">2016-06</option>
+          <option value="2016-05-01">2016-05</option>
+          <option value="2016-04-01">2016-04</option>
+          </select>
       <div id="button">
-        <button id="showdata" onclick="getData()">Show Data</button>
+        <button id="showdata" class="buttonstyle">Show Data</button>
+        <br>
+        <br>
+        <button id="removedata" class="buttonstyle" onclick="removeData()">Remove Data</button>
       </div>
-      <p id="test"></p>
     </div>
 
     <!-- Div container for map -->
-    <div class="centered">
-      <div id="mapid"></div>
-    </div>
+    <div id="mapid"></div>
+
 
     <script>
 	  //Creating map
-    var mymap = L.map('mapid', {zoomControl:true}).setView([54.4, -3.888835], 5);
+    var mymap = L.map('mapid', {zoomControl:true}).setView([51.5197230, -0.098044], 13);
     mymap.zoomControl.setPosition('bottomleft');
 
-    //Adding a tile layer from OSM
-      // L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      //   maxZoom: 14,
-      //   attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a>',
-      // }).addTo(mymap);
-
+     //Adding a tile layer from OSM
+    var osmmap =  L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 20,
+        attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a>',
+      }).addTo(mymap);
 
     //Using geoserver for retrieving map tiles
     var wmsLayer = L.tileLayer.wms('https://demo.boundlessgeo.com/geoserver/ows?', {
         layers: 'ne:ne'
     }).addTo(mymap);
 
+    //Basemap and overlaymap for Layer control
+    var baseMaps = {
+      "Grayscale": wmsLayer
+    };
+    var overlayMaps = {
+      "Streetmap": osmmap,
+    };
+    L.control.layers(baseMaps, overlayMaps).addTo(mymap);
 
-    // function getData(){
-    //     start = document.getElementById("startdate");
-    //     end = document.getElementById("enddate");
-    //     var xmlhttp = new XMLHttpRequest();
-    //     var url = "https://data.police.uk/api/crimes-at-location?" + "date=" + start.value +"&location_id=884227"
-    //     xmlhttp.onreadystatechange = function(){
-    //         if(xmlhttp.readyState == 4  && xmlhttp.status == 200){
-    //             var objectArray = xmlhttp.responseText;
-    //             document.getElementById("test").innerHTML = objectArray;
-    //         }
-    //     }
-    //     xmlhttp.open("GET", url, true)
-    //     xmlhttp.send()
-    // }
+
+    //Creating layer 'crimes'
+    var crimes = new L.GeoJSON();
+
+    //On success and if the layer is not already added to the map, add the data to the layer crimes
+    function loadGeoJson(data) {
+      if (mymap.hasLayer(crimes)) {
+        return false;
+      } else {
+        crimes.addData(data);
+        mymap.addLayer(crimes);
+      }
+    };
+
+    //On button "showdata" is clicked, retrieve data from the local geoserver
+    $("#showdata").click(function(){
+      start = document.getElementById("startdate");
+          $.ajax({
+            url: "http://localhost:8080/geoserver/cite/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=cite:crimes&propertyName=Month,the_geom&CQL_FILTER=Month=%27" + start.value + "%27&outputFormat=application/json",//geoJsonUrl,// + L.Util.getParamString(parameters),
+            datatype: 'json',
+            jsonCallback: 'getJson',
+            success: loadGeoJson
+            });
+    });
+
+    function removeData(){
+      mymap.removeLayer(crimes);
+    }
 
     </script>
 
