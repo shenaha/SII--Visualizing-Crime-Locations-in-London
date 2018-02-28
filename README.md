@@ -16,3 +16,6 @@ The latest complete copy of all the crime data can be downloaded in CSV format f
 - ASB Incidents, Crime and Outcomes (https://data.police.uk/about/#general)
 - URL Encode Decode - URL Percent Encoding and Decoding (https://www.url-encode-decode.com/)
 - Feature Type (http://docs.geoserver.org/stable/en/user/rest/api/featuretypes.html)
+
+#### License
+MIT License. This is the license for the source code, NOT INCLUDING THE DATA OR ANY USED LIBRARY.
